@@ -1,2 +1,2 @@
-# WeebO-backend-
+# WeebO-backend
 Backend for WeebO action figure Ecommerce Appliaction
