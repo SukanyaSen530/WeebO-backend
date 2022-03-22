@@ -15,11 +15,7 @@ const app = express();
 //connecting to mongoDB
 connectDB();
 
-app.use(
-  cors({
-    origin: "*",
-  })
-);
+app.use(cors());
 app.use(express.json());
 
 // Routes
