@@ -66,8 +66,8 @@ const sendToken = (user, statusCode, res) => {
   const token = user.getSignedToken();
   const userWithoutPassword = {
     email: user.email,
-    fullName: user.firstName,
-    username: user.username,
+    fullName: user.fullName,
+    username: user.userName,
     _id: user._id,
   };
   res

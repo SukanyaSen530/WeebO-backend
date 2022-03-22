@@ -15,11 +15,10 @@ export const getAProduct = async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(id)) {
     res.status(404).send({
       success: false,
-      message: `The product - ${id} you are searching for does not exists!:`,
+      message: `The product - ${id} you are searching for does not exist!`,
     });
   } else {
     const product = await Product.findById(id);
-
     res.status(200).json({ success: true, data: product });
   }
 };
