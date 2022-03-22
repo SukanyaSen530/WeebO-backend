@@ -9,10 +9,11 @@ export const getUserById = async (req, res) => {
     res
       .status(404)
       .send({ success: false, message: `No user found with id: ${id}` });
+  else {
+    const user = await User.findById(id);
 
-  const user = await User.findById(id);
-
-  res.status(200).json({ success: true, data: user });
+    res.status(200).json({ success: true, data: user });
+  }
 };
 
 //REGISTER
