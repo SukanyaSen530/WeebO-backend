@@ -1,9 +1,9 @@
 import express from "express";
+import { getAllProducts, getAProduct } from "../controller/products.js";
 
 const productRoutes = express.Router();
 
-productRoutes.get("/", (req, res) => {
-  res.json("Hello MF");
-});
+productRoutes.get("/", getAllProducts);
+productRoutes.get("/:id", getAProduct);
 
 export default productRoutes;
