@@ -6,13 +6,13 @@ export const getUserById = async (req, res) => {
   const { id } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(id))
-    res
+    return res
       .status(404)
       .send({ success: false, message: `No user found with id: ${id}` });
   else {
     const user = await User.findById(id);
 
-    res.status(200).json({ success: true, data: user });
+    return res.status(200).json({ success: true, data: user });
   }
 };
 
@@ -23,13 +23,15 @@ export const registerUser = async (req, res) => {
   const user = await User.findOne({ email: newUser.email });
 
   if (user)
-    res.status(400).json({ success: false, message: "User already exists!" });
+    return res
+      .status(400)
+      .json({ success: false, message: "User already exists!" });
 
   try {
     await newUser.save();
     sendToken(newUser, 201, res);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return res.status(500).json({ message: err.message });
   }
 };
 
@@ -38,7 +40,7 @@ export const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password)
-    res
+    return res
       .status(422)
       .json({ success: false, message: "Please provide Email & Password!" });
 
@@ -46,18 +48,22 @@ export const loginUser = async (req, res) => {
     const user = await User.findOne({ email }).select("+password");
 
     if (!user)
-      res.status(404).json({ success: false, message: "User Not Registered!" });
+      return res
+        .status(404)
+        .json({ success: false, message: "User Not Registered!" });
 
     //check password matches using method
     const isMatch = await user.matchPassword(password);
 
     if (!isMatch) {
-      res.status(404).json({ success: false, message: "Invalid Credentials!" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Invalid Credentials!" });
     } else {
       sendToken(user, 200, res);
     }
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    return res.status(500).json({ success: false, message: err.message });
   }
 };
 
@@ -70,7 +76,7 @@ const sendToken = (user, statusCode, res) => {
     username: user.userName,
     _id: user._id,
   };
-  res
+  return res
     .status(statusCode)
     .json({ success: true, token, user: userWithoutPassword });
 };
