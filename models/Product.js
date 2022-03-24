@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-
+import User from "./User.js";
 const { Schema, model } = mongoose;
 
 const ProductSchema = new Schema(
@@ -7,7 +7,7 @@ const ProductSchema = new Schema(
     user: {
       type: mongoose.Schema.Types.ObjectId,
       required: [true, "User is required!"],
-      ref: "User",
+      ref: User,
     },
     name: {
       type: String,
@@ -69,6 +69,6 @@ const ProductSchema = new Schema(
   }
 );
 
-const Product = model("product", ProductSchema);
+const Product = model("products", ProductSchema);
 
 export default Product;

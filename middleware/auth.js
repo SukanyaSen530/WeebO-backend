@@ -12,7 +12,7 @@ const protectedRoutes = async function (req, res, next) {
   }
 
   if (!token) {
-    res
+    return res
       .status(401)
       .json({ success: false, message: "Unauthorized access to route!" });
   }
@@ -23,7 +23,9 @@ const protectedRoutes = async function (req, res, next) {
     const user = await User.findById(decoded.id);
 
     if (!user) {
-      res.status(404).json({ success: false, message: "User not registered!" });
+      return res
+        .status(404)
+        .json({ success: false, message: "User not registered!" });
     }
 
     req.user = user;
@@ -31,7 +33,7 @@ const protectedRoutes = async function (req, res, next) {
     next();
   } catch (err) {
     if (!user) {
-      res
+      return res
         .status(401)
         .json({ success: false, message: "Unauthorized access to route!" });
     }

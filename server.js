@@ -4,8 +4,13 @@ import cors from "cors";
 
 import connectDB from "./config/db.js";
 
+// Routes
 import productRoutes from "./routes/product.js";
 import userRoutes from "./routes/user.js";
+import wishlistRoutes from "./routes/wishlist.js";
+
+// Middleware to check user authenticated
+import protectedRoutes from "./middleware/auth.js";
 
 //for accessing the .env file
 dotenv.config();
@@ -22,10 +27,10 @@ app.use(express.json());
 app.get("/", (req, res) => {
   res.send("WeebO Backend");
 });
+
 app.use("/api/auth", userRoutes);
 app.use("/api/products", productRoutes);
-
-// app.use("/products", productRoutes);
+app.use("/api/wishlist", protectedRoutes, wishlistRoutes);
 
 const PORT = process.env.PORT || 8000;
 
