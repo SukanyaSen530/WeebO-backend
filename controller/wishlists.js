@@ -64,7 +64,7 @@ export const removeFromWishlist = async (req, res) => {
 
   if (
     !mongoose.Types.ObjectId.isValid(productID) ||
-    !mongoose.Types.ObjectId.isValid(productID)
+    !mongoose.Types.ObjectId.isValid(userID)
   ) {
     return res.status(404).send({
       success: false,
