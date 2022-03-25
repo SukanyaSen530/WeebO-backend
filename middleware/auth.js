@@ -32,11 +32,9 @@ const protectedRoutes = async function (req, res, next) {
 
     next();
   } catch (err) {
-    if (!user) {
-      return res
-        .status(401)
-        .json({ success: false, message: "Unauthorized access to route!" });
-    }
+    return res
+      .status(401)
+      .json({ success: false, message: "Unauthorized access to route!" });
   }
 };
 
