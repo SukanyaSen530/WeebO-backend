@@ -9,7 +9,7 @@ export const getWishlist = async (req, res) => {
       userId: userID,
     }).populate("productIds", "name img price discount tag rating brandName");
 
-    return res.status(200).json({ wishlist: wishListWithData.productIds });
+    return res.status(200).json({ wishlist: wishListWithData?.productIds });
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
@@ -42,7 +42,7 @@ export const createorAddToWishlist = async (req, res) => {
           "productIds",
           "name img price discount tag rating brandName,"
         );
-      return res.status(200).json({ wishlist: newWishlist });
+      return res.status(200).json({ wishlist: newWishlist?.productIds });
     } catch (err) {
       return res.status(500).json({ message: err.message });
     }
@@ -54,7 +54,7 @@ export const createorAddToWishlist = async (req, res) => {
         { new: true }
       ).populate("productIds", "name img price discount tag rating brandName");
 
-      return res.status(200).json({ wishlist: updatedWishlist.productIds });
+      return res.status(200).json({ wishlist: updatedWishlist?.productIds });
     } catch (err) {
       return res.status(500).json({ message: err.message });
     }
