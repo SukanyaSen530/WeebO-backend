@@ -15,6 +15,7 @@ const ProductSchema = new Schema(
     },
     price: {
       type: Number,
+      default: 1,
       required: [true, "Product price is required"],
     },
     discount: {

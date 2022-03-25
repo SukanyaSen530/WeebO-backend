@@ -9,6 +9,6 @@ const wishlistRoutes = express.Router();
 
 wishlistRoutes.get("/", getWishlist);
 wishlistRoutes.post("/add", createorAddToWishlist);
-wishlistRoutes.delete("/remove", removeFromWishlist);
+wishlistRoutes.post("/remove", removeFromWishlist);
 
 export default wishlistRoutes;

@@ -7,9 +7,9 @@ export const getWishlist = async (req, res) => {
   try {
     const wishListWithData = await Wishlist.findOne({
       userId: userID,
-    }).populate("productIds", "name img price discount tag rating");
+    }).populate("productIds", "name img price discount tag rating brandName");
 
-    return res.status(200).json({ wishlist: wishListWithData });
+    return res.status(200).json({ wishlist: wishListWithData.productIds });
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
@@ -36,7 +36,12 @@ export const createorAddToWishlist = async (req, res) => {
       productIds: [productID],
     });
     try {
-      await newWishlist.save();
+      await newWishlist
+        .save()
+        .populate(
+          "productIds",
+          "name img price discount tag rating brandName,"
+        );
       return res.status(200).json({ wishlist: newWishlist });
     } catch (err) {
       return res.status(500).json({ message: err.message });
@@ -47,9 +52,9 @@ export const createorAddToWishlist = async (req, res) => {
         { userId: userID },
         { $addToSet: { productIds: productID } },
         { new: true }
-      );
+      ).populate("productIds", "name img price discount tag rating brandName");
 
-      return res.status(200).json({ wishlist: updatedWishlist });
+      return res.status(200).json({ wishlist: updatedWishlist.productIds });
     } catch (err) {
       return res.status(500).json({ message: err.message });
     }
@@ -59,8 +64,6 @@ export const createorAddToWishlist = async (req, res) => {
 export const removeFromWishlist = async (req, res) => {
   const { id: productID } = req.body;
   const userID = req.user._id;
-
-  console.log(productID);
 
   if (
     !mongoose.Types.ObjectId.isValid(productID) ||
@@ -97,7 +100,7 @@ export const removeFromWishlist = async (req, res) => {
     });
 
   const productExists = wishlist.productIds.find(
-    (product) => product == mongoose.Types.ObjectId(productID)
+    (product) => product == productID
   );
 
   if (!productExists) {
@@ -108,12 +111,12 @@ export const removeFromWishlist = async (req, res) => {
   }
 
   try {
-    const updatedWishlist = await Wishlist.findOneAndUpdate(
+    await Wishlist.findOneAndUpdate(
       { userId: userID },
       { $pull: { productIds: productID } },
       { new: true }
     );
-    return res.status(200).json({ wishlist: updatedWishlist });
+    return res.status(200).json({ success: true, productRemoved: productID });
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
