@@ -8,6 +8,7 @@ import connectDB from "./config/db.js";
 import productRoutes from "./routes/product.js";
 import userRoutes from "./routes/user.js";
 import wishlistRoutes from "./routes/wishlist.js";
+import cartRoutes from "./routes/cart.js";
 
 // Middleware to check user authenticated
 import protectedRoutes from "./middleware/auth.js";
@@ -31,6 +32,7 @@ app.get("/", (req, res) => {
 app.use("/api/auth", userRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/wishlist", protectedRoutes, wishlistRoutes);
+app.use("/api/cart", protectedRoutes, cartRoutes);
 
 const PORT = process.env.PORT || 8000;
 

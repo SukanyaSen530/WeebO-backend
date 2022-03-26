@@ -4,12 +4,15 @@ import Wishlist from "../models/Wishlist.js";
 
 export const getWishlist = async (req, res) => {
   const userID = req.user._id;
+
   try {
     const wishListWithData = await Wishlist.findOne({
-      userId: userID,
-    }).populate("productIds", "name img price discount tag rating brandName");
-
-    return res.status(200).json({ wishlist: wishListWithData?.productIds });
+      user: userID,
+    }).populate(
+      "wishlistItems",
+      "name img price discount tag inStock rating brandName"
+    );
+    return res.status(200).json({ wishlist: wishListWithData?.wishlistItems });
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
@@ -18,6 +21,13 @@ export const getWishlist = async (req, res) => {
 export const createorAddToWishlist = async (req, res) => {
   const { id: productID } = req.body;
   const userID = req.user._id;
+
+  if (!mongoose.Types.ObjectId.isValid(productID)) {
+    return res.status(404).send({
+      success: false,
+      message: `Not a valid Product ID!`,
+    });
+  }
 
   const product = await Product.findById(productID);
 
@@ -28,33 +38,38 @@ export const createorAddToWishlist = async (req, res) => {
     });
   }
 
-  const wishlist = await Wishlist.findOne({ userId: userID });
+  const wishlist = await Wishlist.findOne({ user: userID });
 
   if (!wishlist) {
     const newWishlist = new Wishlist({
-      userId: userID,
-      productIds: [productID],
+      user: userID,
+      wishlistItems: [productID],
     });
+
     try {
       await newWishlist
         .save()
         .populate(
-          "productIds",
-          "name img price discount tag rating brandName,"
+          "wishlistItems",
+          "name img price discount inStock tag rating brandName,"
         );
-      return res.status(200).json({ wishlist: newWishlist?.productIds });
+
+      return res.status(200).json({ wishlist: newWishlist?.wishlistItems });
     } catch (err) {
       return res.status(500).json({ message: err.message });
     }
   } else {
     try {
       const updatedWishlist = await Wishlist.findOneAndUpdate(
-        { userId: userID },
-        { $addToSet: { productIds: productID } },
+        { user: userID },
+        { $addToSet: { wishlistItems: productID } },
         { new: true }
-      ).populate("productIds", "name img price discount tag rating brandName");
+      ).populate(
+        "wishlistItems",
+        "name img price discount inStock tag rating brandName"
+      );
 
-      return res.status(200).json({ wishlist: updatedWishlist?.productIds });
+      return res.status(200).json({ wishlist: updatedWishlist?.wishlistItems });
     } catch (err) {
       return res.status(500).json({ message: err.message });
     }
@@ -65,13 +80,10 @@ export const removeFromWishlist = async (req, res) => {
   const { id: productID } = req.body;
   const userID = req.user._id;
 
-  if (
-    !mongoose.Types.ObjectId.isValid(productID) ||
-    !mongoose.Types.ObjectId.isValid(userID)
-  ) {
+  if (!mongoose.Types.ObjectId.isValid(productID)) {
     return res.status(404).send({
       success: false,
-      message: `Not a valid Product or User ID!`,
+      message: `Not a valid Product ID!`,
     });
   }
 
@@ -84,7 +96,7 @@ export const removeFromWishlist = async (req, res) => {
     });
   }
 
-  const wishlist = await Wishlist.findOne({ userId: userID });
+  const wishlist = await Wishlist.findOne({ user: userID });
 
   if (!wishlist) {
     return res.status(404).send({
@@ -93,13 +105,13 @@ export const removeFromWishlist = async (req, res) => {
     });
   }
 
-  if (wishlist.productIds.length === 0)
+  if (wishlist.wishlistItems.length === 0)
     return res.status(404).send({
       success: false,
       message: `Wishlist empty!`,
     });
 
-  const productExists = wishlist.productIds.find(
+  const productExists = wishlist.wishlistItems.find(
     (product) => product == productID
   );
 
@@ -112,8 +124,8 @@ export const removeFromWishlist = async (req, res) => {
 
   try {
     await Wishlist.findOneAndUpdate(
-      { userId: userID },
-      { $pull: { productIds: productID } },
+      { user: userID },
+      { $pull: { wishlistItems: productID } },
       { new: true }
     );
     return res.status(200).json({ success: true, productRemoved: productID });

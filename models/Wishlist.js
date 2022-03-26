@@ -4,14 +4,14 @@ import User from "./User.js";
 const { Schema, model } = mongoose;
 
 const WishlistSchema = new Schema({
-  productIds: [
+  wishlistItems: [
     {
       type: mongoose.Schema.Types.ObjectId,
       required: [true, "Product Id is required!"],
       ref: Product,
     },
   ],
-  userId: {
+  user: {
     type: mongoose.Schema.Types.ObjectId,
     required: [true, "User Id is required!"],
     ref: User,
