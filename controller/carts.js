@@ -84,11 +84,18 @@ export const createorAddToCart = async (req, res) => {
     } else {
       // 2. Product exists increase quantity
       condition = { user: userID, "cartItems.product": productID };
-      updateAction = {
-        $set: {
-          "cartItems.$.quantity": productExists.quantity + qty,
-        },
-      };
+      if (productExists.quantity < 5)
+        updateAction = {
+          $set: {
+            "cartItems.$.quantity": productExists.quantity + qty,
+          },
+        };
+      else {
+        return res.status(500).send({
+          success: false,
+          message: `Max 5 products can be bought together!`,
+        });
+      }
     }
 
     try {
