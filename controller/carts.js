@@ -10,7 +10,7 @@ export const getCart = async (req, res) => {
       user: userID,
     }).populate(
       "cartItems.product",
-      "name img price discount rating brandName"
+      "name img price discount categoryName rating brandName"
     );
 
     return res.status(200).json({ cart: cartWithData?.cartItems });
@@ -54,7 +54,7 @@ export const createorAddToCart = async (req, res) => {
 
       await newCart.populate(
         "cartItems.product",
-        "name img price discount rating brandName,"
+        "name img price discount categoryName rating brandName,"
       );
 
       return res.status(200).json({ cart: newCart?.cartItems });
@@ -96,7 +96,7 @@ export const createorAddToCart = async (req, res) => {
         new: true,
       }).populate(
         "cartItems.product",
-        "name img price discount inStock tag rating brandName"
+        "name img price discount categoryName rating brandName"
       );
       return res.status(200).json({ cart: updatedCart?.cartItems });
     } catch (err) {
@@ -142,16 +142,23 @@ export const incrementDecrementQuantity = async (req, res) => {
 
   let updateAction = {};
   if (action === "increment") {
-    updateAction = {
-      $inc: { "cartItems.$.quantity": 1 },
-    };
+    if (productExists.quantity < 5)
+      updateAction = {
+        $inc: { "cartItems.$.quantity": 1 },
+      };
+    else {
+      return res.status(500).send({
+        success: false,
+        message: `Max 5 products can be bought together!`,
+      });
+    }
   } else {
     if (productExists.quantity > 1)
       updateAction = {
         $inc: { "cartItems.$.quantity": -1 },
       };
     else {
-      return res.status(404).send({
+      return res.status(500).send({
         success: false,
         message: `Can not be decremented below 1!`,
       });
@@ -167,7 +174,7 @@ export const incrementDecrementQuantity = async (req, res) => {
       }
     ).populate(
       "cartItems.product",
-      "name img price discount inStock tag rating brandName"
+      "name img price discount categoryName rating brandName"
     );
     return res.status(200).json({ cart: updatedCart?.cartItems });
   } catch (err) {
@@ -205,7 +212,7 @@ export const removeFromCart = async (req, res) => {
   }
 
   if (cart.cartItems.length === 0)
-    return res.status(404).send({
+    return res.status(500).send({
       success: false,
       message: `Cart empty!`,
     });
