@@ -52,12 +52,14 @@ export const createorAddToCart = async (req, res) => {
     try {
       await newCart.save();
 
-      await newCart.populate(
+      const cartWithData = await Cart.findOne({
+        user: userID,
+      }).populate(
         "cartItems.product",
-        "name img price discount categoryName rating brandName,"
+        "name img price discount categoryName rating brandName"
       );
 
-      return res.status(200).json({ cart: newCart?.cartItems });
+      return res.status(200).json({ cart: cartWithData?.cartItems });
     } catch (err) {
       return res.status(500).json({ message: err.message });
     }
@@ -99,13 +101,18 @@ export const createorAddToCart = async (req, res) => {
     }
 
     try {
-      const updatedCart = await Cart.findOneAndUpdate(condition, updateAction, {
+      await Cart.findOneAndUpdate(condition, updateAction, {
         new: true,
+      });
+
+      const cartWithData = await Cart.findOne({
+        user: userID,
       }).populate(
         "cartItems.product",
         "name img price discount categoryName rating brandName"
       );
-      return res.status(200).json({ cart: updatedCart?.cartItems });
+
+      return res.status(200).json({ cart: cartWithData?.cartItems });
     } catch (err) {
       return res.status(500).json({ message: err.message });
     }
@@ -173,17 +180,22 @@ export const incrementDecrementQuantity = async (req, res) => {
   }
 
   try {
-    const updatedCart = await Cart.findOneAndUpdate(
+    await Cart.findOneAndUpdate(
       { user: userID, "cartItems.product": productID },
       updateAction,
       {
         new: true,
       }
-    ).populate(
+    );
+
+    const cartWithData = await Cart.findOne({
+      user: userID,
+    }).populate(
       "cartItems.product",
       "name img price discount categoryName rating brandName"
     );
-    return res.status(200).json({ cart: updatedCart?.cartItems });
+
+    return res.status(200).json({ cart: cartWithData?.cartItems });
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
@@ -242,6 +254,7 @@ export const removeFromCart = async (req, res) => {
       { $pull: { cartItems: { _id: productExists._id } } },
       { new: true }
     );
+
     return res.status(200).json({ success: true, productRemoved: productID });
   } catch (err) {
     return res.status(500).json({ message: err.message });

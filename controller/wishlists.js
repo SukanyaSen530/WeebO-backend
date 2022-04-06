@@ -12,7 +12,10 @@ export const getWishlist = async (req, res) => {
       "wishlistItems",
       "name img price discount tag inStock rating brandName"
     );
-    return res.status(200).json({ wishlist: wishListWithData?.wishlistItems });
+
+    return res
+      .status(200)
+      .json({ wishlist: wishListWithData?.wishlistItems || [] });
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
@@ -47,29 +50,39 @@ export const createorAddToWishlist = async (req, res) => {
     });
 
     try {
-      await newWishlist
-        .save()
-        .populate(
-          "wishlistItems",
-          "name img price discount inStock tag rating brandName,"
-        );
+      await newWishlist.save();
 
-      return res.status(200).json({ wishlist: newWishlist?.wishlistItems });
+      const wishListWithData = await Wishlist.findOne({
+        user: userID,
+      }).populate(
+        "wishlistItems",
+        "name img price discount tag inStock rating brandName"
+      );
+
+      return res
+        .status(200)
+        .json({ wishlist: wishListWithData?.wishlistItems || [] });
     } catch (err) {
       return res.status(500).json({ message: err.message });
     }
   } else {
     try {
-      const updatedWishlist = await Wishlist.findOneAndUpdate(
+      await Wishlist.findOneAndUpdate(
         { user: userID },
         { $addToSet: { wishlistItems: productID } },
         { new: true }
-      ).populate(
-        "wishlistItems",
-        "name img price discount inStock tag rating brandName"
       );
 
-      return res.status(200).json({ wishlist: updatedWishlist?.wishlistItems });
+      const wishListWithData = await Wishlist.findOne({
+        user: userID,
+      }).populate(
+        "wishlistItems",
+        "name img price discount tag inStock rating brandName"
+      );
+
+      return res
+        .status(200)
+        .json({ wishlist: wishListWithData?.wishlistItems || [] });
     } catch (err) {
       return res.status(500).json({ message: err.message });
     }
