@@ -40,7 +40,7 @@ export const createorAddToCart = async (req, res) => {
     });
   }
 
-  const cart = await Cart.findOne({ userId: userID });
+  const cart = await Cart.findOne({ user: userID });
 
   // if cart does not exist
   if (!cart) {
@@ -140,7 +140,7 @@ export const incrementDecrementQuantity = async (req, res) => {
     });
   }
 
-  const cart = await Cart.findOne({ userId: userID });
+  const cart = await Cart.findOne({ user: userID });
 
   // if cart exists
   const productExists = cart.cartItems.find(
@@ -174,7 +174,7 @@ export const incrementDecrementQuantity = async (req, res) => {
     else {
       return res.status(500).send({
         success: false,
-        message: `Can not be decremented below 1!`,
+        message: `Quantity must be atleast 1!`,
       });
     }
   }
