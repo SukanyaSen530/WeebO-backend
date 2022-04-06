@@ -1,5 +1,5 @@
 #### (WeebO-backend)
-Backend for WeebO action figure Ecommerce Appliaction
+Backend for WeebO action figure Ecommerce Application
 
 ### Features - 
 - Authentication using JWT token
