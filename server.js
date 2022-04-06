@@ -9,7 +9,7 @@ import productRoutes from "./routes/product.js";
 import userRoutes from "./routes/user.js";
 import wishlistRoutes from "./routes/wishlist.js";
 import cartRoutes from "./routes/cart.js";
-import addressRoutes from "./routes/adress.js";
+import addressRoutes from "./routes/address.js";
 
 // Middleware to check user authenticated
 import protectedRoutes from "./middleware/auth.js";
@@ -34,7 +34,7 @@ app.use("/api/auth", userRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/wishlist", protectedRoutes, wishlistRoutes);
 app.use("/api/cart", protectedRoutes, cartRoutes);
-app.use("/api/address", productRoutes, addressRoutes);
+app.use("/api/address", protectedRoutes, addressRoutes);
 
 const PORT = process.env.PORT || 8000;
 

@@ -4,13 +4,13 @@ import {
   deleteAddress,
   getAllAdresses,
   updateAddress,
-} from "../controller/adresses";
+} from "../controller/addresses.js";
 
 const addressRoutes = express.Router();
 
 addressRoutes.get("/", getAllAdresses);
 addressRoutes.post("/", createNewAddress);
-addressRoutes.post("/", updateAddress);
+addressRoutes.put("/:id", updateAddress);
 addressRoutes.delete("/:id", deleteAddress);
 
 export default addressRoutes;

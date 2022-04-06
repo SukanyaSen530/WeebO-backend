@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import Address from "../models/Address";
+import Address from "../models/Address.js";
 
 export const getAllAdresses = async (req, res) => {
   const userID = req.user._id;
@@ -10,12 +10,14 @@ export const getAllAdresses = async (req, res) => {
     });
 
     return res.status(200).json({ addresses: addressData });
-  } catch (err) {
-    return res.status(500).json({ message: err.message });
+  } catch (e) {
+    return res.status(500).json({ message: e.message });
   }
 };
 
 export const createNewAddress = async (req, res) => {
+  const userID = req.user._id;
+
   const newAddress = new Address({
     user: userID,
     ...req.body,
@@ -25,8 +27,8 @@ export const createNewAddress = async (req, res) => {
     await newAddress.save();
 
     res.status(201).json({ success: true, address: newAddress });
-  } catch (err) {
-    res.status(409).json({ success: false, message: error.message });
+  } catch (e) {
+    res.status(409).json({ success: false, message: e.message });
   }
 };
 
@@ -41,7 +43,7 @@ export const updateAddress = async (req, res) => {
   const updatedAddress = req.body;
 
   try {
-    const newUpdatedAddress = await IssueItem.findByIdAndUpdate(
+    const newUpdatedAddress = await Address.findByIdAndUpdate(
       id,
       updatedAddress,
       {
@@ -51,7 +53,8 @@ export const updateAddress = async (req, res) => {
 
     res.status(201).json({ success: true, address: newUpdatedAddress });
   } catch (e) {
-    res.status(409).json({ success: false, message: error.message });
+    console.log(e);
+    res.status(409).json({ success: false, message: e.message });
   }
 };
 
@@ -68,6 +71,6 @@ export const deleteAddress = async (req, res) => {
 
     res.status(201).json({ success: true, id: id });
   } catch (e) {
-    res.status(409).json({ success: false, message: error.message });
+    res.status(409).json({ success: false, message: e.message });
   }
 };

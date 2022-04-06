@@ -15,7 +15,6 @@ const AddressSchema = new Schema({
   area: String,
   city: String,
   state: String,
-  country: String,
   pinCode: String,
   mobile: String,
   addressType: {
