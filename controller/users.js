@@ -3,16 +3,19 @@ import mongoose from "mongoose";
 
 //GET USER PROFILE
 export const getUserById = async (req, res) => {
-  const { id } = req.params;
+  const userID = req.user._id;
 
-  if (!mongoose.Types.ObjectId.isValid(id))
+  if (!mongoose.Types.ObjectId.isValid(userID))
     return res
       .status(404)
-      .send({ success: false, message: `No user found with id: ${id}` });
+      .send({ success: false, message: `No user found with id: ${userID}` });
   else {
-    const user = await User.findById(id);
-
-    return res.status(200).json({ success: true, data: user });
+    try {
+      const user = await User.findById(userID);
+      return res.status(200).json({ success: true, user: user });
+    } catch (e) {
+      return res.status(500).json({ message: err.message });
+    }
   }
 };
 

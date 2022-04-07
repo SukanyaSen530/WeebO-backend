@@ -5,7 +5,7 @@ export const getAllAdresses = async (req, res) => {
   const userID = req.user._id;
 
   try {
-    const addressData = await Address.findOne({
+    const addressData = await Address.find({
       user: userID,
     });
 
@@ -51,7 +51,7 @@ export const updateAddress = async (req, res) => {
       }
     );
 
-    res.status(201).json({ success: true, address: newUpdatedAddress });
+    res.status(200).json({ success: true, address: newUpdatedAddress });
   } catch (e) {
     console.log(e);
     res.status(409).json({ success: false, message: e.message });
@@ -69,7 +69,7 @@ export const deleteAddress = async (req, res) => {
   try {
     await Address.findByIdAndRemove(id);
 
-    res.status(201).json({ success: true, id: id });
+    res.status(200).json({ success: true, id: id });
   } catch (e) {
     res.status(409).json({ success: false, message: e.message });
   }
