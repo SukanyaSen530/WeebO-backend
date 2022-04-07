@@ -5,6 +5,7 @@ Backend for WeebO action figure Ecommerce Application
 - Authentication using JWT token
 - User Wishlist management
 - User Cart management
+- User Address management
 - Products
 
 ## Stack Used
