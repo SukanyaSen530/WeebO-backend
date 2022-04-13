@@ -32,13 +32,19 @@ const OrderSchema = new Schema({
       },
     },
   ],
-  totalPrice: String,
+  totalPrice: {
+    type: Number,
+  },
   couponDiscount: {
     type: Number,
     default: 0,
   },
+  finalPrice: {
+    type: Number,
+  },
   paymentMethod: {
     type: "String",
+    default: "card",
   },
   isDelivered: {
     type: Boolean,
@@ -46,6 +52,6 @@ const OrderSchema = new Schema({
   },
 });
 
-const Cart = model("cart", CartSchema);
+const Order = model("order", OrderSchema);
 
-export default Cart;
+export default Order;
