@@ -37,10 +37,17 @@ store.on("error", function (error) {
 });
 
 app.use(cors());
-app.use(express.json());
+app.use(
+  express.json({
+    limit: "5mb",
+    verify: (req, res, buf) => {
+      req.rawBody = buf.toString();
+    },
+  })
+);
 app.use(
   session({
-    secret: process.env.sessionKey,
+    secret: process.env.SESSION_KEY,
     resave: false,
     saveUninitialized: true,
     cookie: { secure: false },
@@ -58,7 +65,7 @@ app.use("/api/wishlist", protectedRoutes, wishlistRoutes);
 app.use("/api/cart", protectedRoutes, cartRoutes);
 app.use("/api/address", protectedRoutes, addressRoutes);
 app.use("/api/order", protectedRoutes, orderRoutes);
-app.use("/api/pay", protectedRoutes, paymentRoutes);
+app.use("/api/pay", paymentRoutes);
 
 
 const PORT = process.env.PORT || 8000;
