@@ -1,7 +1,5 @@
 import Order from "../models/Order.js";
-import Stripe from "stripe";
-const stripe = new Stripe(process.env.STRIPE_KEY);
-import { v4 as uuid } from "uuid";
+
 
 export const getOrders = async (req, res) => {
   const userID = req.user._id;
@@ -19,43 +17,19 @@ export const getOrders = async (req, res) => {
 
 export const createOrder = async (req, res) => {
   const userID = req.user._id;
-  const { token, order } = req.body;
-
-  const customer = await stripe.customers.create({
-    email: token.email,
-    source: token.id,
-  });
-
-  const idempotency_key = uuid(); //so that we don't charge the customer twice
-
-  const charge = await stripe.charges.create(
-    {
-      amount: order.totalPrice * 100,
-      currency: "inr",
-      customer: customer.id,
-      receipt_email: token.email,
-      description: `Purchased`,
-      shipping: {
-        name: token.card.name,
-        address: order.addressId,
-      },
-    },
-    {
-      idempotency_key,
-    }
-  );
-
-  const newOrder = new Order({
-    user: userID,
-    ...order,
-    finalPrice: charge.amount,
-  });
+  const { order } = req.body;
 
   try {
+    const newOrder = new Order({
+      user: userID,
+      ...order,
+    });
+
     await newOrder.save();
 
-    res.status(201).json({ success: true, order: newOrder });
+    res.status(200).json({ success: true, orderId: newOrder._id });
   } catch (e) {
+    console.log(e);
     res.status(409).json({ success: false, message: e.message });
   }
 };
