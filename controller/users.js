@@ -63,7 +63,7 @@ export const loginUser = async (req, res) => {
         .status(404)
         .json({ success: false, message: "Invalid Credentials!" });
     } else {
-      sendToken(user, 200, res);
+      sendToken(user, 200, res, req);
     }
   } catch (err) {
     return res.status(500).json({ success: false, message: err.message });
@@ -71,7 +71,7 @@ export const loginUser = async (req, res) => {
 };
 
 //JWT TOKEN
-const sendToken = (user, statusCode, res) => {
+const sendToken = (user, statusCode, res, req) => {
   const token = user.getSignedToken();
   const userWithoutPassword = {
     email: user.email,
@@ -79,6 +79,7 @@ const sendToken = (user, statusCode, res) => {
     userName: user.userName,
     _id: user._id,
   };
+
   return res
     .status(statusCode)
     .json({ success: true, token, user: userWithoutPassword });

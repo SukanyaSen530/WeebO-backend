@@ -17,7 +17,7 @@ const OrderSchema = new Schema({
   },
   orderItems: [
     {
-      id: {
+      _id: {
         type: mongoose.Schema.Types.ObjectId,
         required: [true, "Product Id is required!"],
         ref: Product,

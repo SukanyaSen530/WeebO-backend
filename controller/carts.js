@@ -19,24 +19,6 @@ export const getCart = async (req, res) => {
   }
 };
 
-export const clearCart = async (req, res) => {
-  const userID = req.user._id;
-
-  try {
-    await Cart.findOneAndUpdate(
-      { user: userID },
-      { $set: { cartItems: [] } },
-      {
-        new: true,
-      }
-    );
-
-    return res.status(200).json({ cart: [] });
-  } catch (err) {
-    return res.status(500).json({ message: err.message });
-  }
-};
-
 export const createorAddToCart = async (req, res) => {
   const { id: productID, quantity } = req.body;
   const userID = req.user._id;

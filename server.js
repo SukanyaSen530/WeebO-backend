@@ -1,8 +1,6 @@
 import dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
-import session from "express-session";
-import { default as connectMongoDBSession } from "connect-mongodb-session";
 
 import connectDB from "./config/db.js";
 
@@ -25,16 +23,6 @@ const app = express();
 
 //connecting to mongoDB
 connectDB();
-const MongoDBStore = connectMongoDBSession(session);
-
-const store = new MongoDBStore({
-  uri: process.env.MONGO_URL,
-  collection: "sessions",
-});
-
-store.on("error", function (error) {
-  console.log("error connecting", error);
-});
 
 app.use(cors());
 app.use(
@@ -43,15 +31,6 @@ app.use(
     verify: (req, res, buf) => {
       req.rawBody = buf.toString();
     },
-  })
-);
-app.use(
-  session({
-    secret: process.env.SESSION_KEY,
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: false },
-    store: store,
   })
 );
 
