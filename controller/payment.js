@@ -20,11 +20,7 @@ export const checkoutPayment = async (req, res) => {
       metadata: {
         order: `${orderDetail}`,
       },
-      // discounts: [
-      //   {
-      //     coupon: 'default',
-      //   },
-      // ],
+      allow_promotion_codes: true,
       success_url: `${process.env.CLIENT_URL}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.CLIENT_URL}/checkout`,
     });
@@ -39,8 +35,6 @@ export const checkoutPayment = async (req, res) => {
 export const checkoutComplete = async (req, res) => {
   const stripe = new Stripe(process.env.STRIPE_KEY);
   const payload = req.rawBody;
-
-  console.log({ payload });
 
   const sig = req.headers["stripe-signature"];
   let event;
@@ -62,16 +56,19 @@ export const checkoutComplete = async (req, res) => {
     if (session.payment_status === "paid") {
       const userID = data?.data?.object.client_reference_id;
       const orderDetails = data?.data?.object?.metadata?.order;
-      const order = JSON.parse(orderDetails);
 
-      try {
-        const newOrder = new Order({
-          user: userID,
-          ...order,
-        });
-        await newOrder.save();
-      } catch (e) {
-        console.log("error saving order", e);
+      if (orderDetails) {
+        const order = JSON.parse(orderDetails);
+
+        try {
+          const newOrder = new Order({
+            user: userID,
+            ...order,
+          });
+          await newOrder.save();
+        } catch (e) {
+          console.log("error saving order", e);
+        }
       }
 
       try {
