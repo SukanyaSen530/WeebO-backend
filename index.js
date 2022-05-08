@@ -5,13 +5,13 @@ import cors from "cors";
 import connectDB from "./config/db.js";
 
 // Routes
-import productRoutes from "./routes/product.js";
-import userRoutes from "./routes/user.js";
-import wishlistRoutes from "./routes/wishlist.js";
-import cartRoutes from "./routes/cart.js";
-import addressRoutes from "./routes/address.js";
-import orderRoutes from "./routes/order.js";
-import paymentRoutes from "./routes/payment.js";
+import productRoutes from "./api/product.js";
+import userRoutes from "./api/user.js";
+import wishlistRoutes from "./api/wishlist.js";
+import cartRoutes from "./api/cart.js";
+import addressRoutes from "./api/address.js";
+import orderRoutes from "./api/order.js";
+import paymentRoutes from "./api/payment.js";
 
 // Middleware to check user authenticated
 import protectedRoutes from "./middleware/auth.js";
@@ -45,7 +45,6 @@ app.use("/api/cart", protectedRoutes, cartRoutes);
 app.use("/api/address", protectedRoutes, addressRoutes);
 app.use("/api/order", protectedRoutes, orderRoutes);
 app.use("/api/pay", paymentRoutes);
-
 
 const PORT = process.env.PORT || 8000;
 
