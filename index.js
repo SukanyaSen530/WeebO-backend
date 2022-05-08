@@ -53,3 +53,6 @@ const server = app.listen(PORT, (err) => {
   if (err) console.log("Error in server setup");
   console.log(`Server running on ${port}`);
 });
+
+
+export default app;
