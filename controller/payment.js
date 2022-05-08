@@ -57,7 +57,7 @@ export const checkoutComplete = async (req, res) => {
       }
     );
 
-    if (session.payment_status === "paid") {
+    if (checkout_session.payment_status === "paid") {
       const userID = data?.data?.object.client_reference_id;
       const addressId = data?.data?.object?.metadata?.addressId;
 
