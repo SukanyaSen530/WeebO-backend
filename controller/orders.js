@@ -5,9 +5,25 @@ export const getOrders = async (req, res) => {
   const userID = req.user._id;
 
   try {
+    // const ordersData = await Order.find({
+    //   user: userID,
+    // })
+    //   .populate("addressId", "name area city mobile addressType state pinCode")
+    //   .populate(
+    //     "orderItems.product",
+    //     "name img price discount categoryName rating brandName"
+    //   );
+
     const ordersData = await Order.find({
       user: userID,
-    }).populate("addressId", "name area city mobile addressType state pinCode");
+    }).populate([
+      { path: "addressId" },
+      {
+        path: "orderItems.product",
+        select: "name img price discount categoryName rating brandName",
+      },
+    ]);
+    // .sort({ createdAt: -1 });
 
     return res.status(200).json({ orders: ordersData });
   } catch (e) {
@@ -15,21 +31,3 @@ export const getOrders = async (req, res) => {
   }
 };
 
-export const createOrder = async (req, res) => {
-  const userID = req.user._id;
-  const { order } = req.body;
-
-  try {
-    const newOrder = new Order({
-      user: userID,
-      ...order,
-    });
-
-    await newOrder.save();
-
-    res.status(200).json({ success: true, orderId: newOrder._id });
-  } catch (e) {
-    console.log(e);
-    res.status(409).json({ success: false, message: e.message });
-  }
-};
