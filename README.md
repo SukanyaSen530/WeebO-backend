@@ -6,6 +6,8 @@ Backend for WeebO action figure Ecommerce Application
 - User Wishlist management
 - User Cart management
 - User Address management
+- User Order managament
+- Stripe payment integration using webhooks
 - Products
 
 ## Stack Used
