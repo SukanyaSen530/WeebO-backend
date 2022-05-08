@@ -38,13 +38,13 @@ app.use(
 app.get("/", (req, res) => {
   res.send("WeebO Backend");
 });
-app.use("/api/auth", userRoutes);
-app.use("/api/products", productRoutes);
-app.use("/api/wishlist", protectedRoutes, wishlistRoutes);
-app.use("/api/cart", protectedRoutes, cartRoutes);
-app.use("/api/address", protectedRoutes, addressRoutes);
-app.use("/api/order", protectedRoutes, orderRoutes);
-app.use("/api/pay", paymentRoutes);
+app.use("/auth", userRoutes);
+app.use("/products", productRoutes);
+app.use("/wishlist", protectedRoutes, wishlistRoutes);
+app.use("/cart", protectedRoutes, cartRoutes);
+app.use("/address", protectedRoutes, addressRoutes);
+app.use("/order", protectedRoutes, orderRoutes);
+app.use("/pay", paymentRoutes);
 
 const PORT = process.env.PORT || 8000;
 
