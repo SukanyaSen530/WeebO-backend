@@ -9,7 +9,6 @@ export const getOrders = async (req, res) => {
       user: userID,
     })
       .populate([
-        { path: "address" },
         {
           path: "orderItems.product",
           select: "name img price discount categoryName rating brandName",

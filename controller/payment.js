@@ -2,6 +2,7 @@ import Stripe from "stripe";
 import { getLineItems, getOrderData } from "../utils/stripeHelper.js";
 import Cart from "../models/Cart.js";
 import Order from "../models/Order.js";
+import Address from "../models/Address.js";
 
 export const checkoutPayment = async (req, res) => {
   const userID = req.user._id;
@@ -62,17 +63,19 @@ export const checkoutComplete = async (req, res) => {
 
       const order = getOrderData(session.line_items.data);
 
-      const totalAmount = data?.data?.object?.amount_subtotal;
-      const couponDiscount = data?.data?.object?.amount_total;
+      const totalAmount = parseInt(data?.data?.object?.amount_subtotal / 100);
+      const couponDiscount = parseInt(data?.data?.object?.amount_total / 100);
+
+      const address = await Address.findById(addressId);
 
       if (order) {
         try {
           const newOrder = new Order({
             user: userID,
-            address: addressId,
+            address,
             orderItems: [...order],
-            totalPaid: parseInt(totalAmount / 100),
-            couponDiscount: parseInt(couponDiscount / 100),
+            totalPaid: totalAmount,
+            couponDiscount: totalAmount - couponDiscount,
           });
           await newOrder.save();
         } catch (e) {

@@ -11,11 +11,7 @@ const OrderSchema = new Schema(
       required: [true, "User Id is required!"],
       ref: User,
     },
-    address: {
-      type: mongoose.Schema.Types.ObjectId,
-      required: [true, "Address Id is required!"],
-      ref: Address,
-    },
+    address: { type: mongoose.Schema.Types.Mixed, required: true },
     orderItems: [
       {
         product: {
