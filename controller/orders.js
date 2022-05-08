@@ -5,15 +5,6 @@ export const getOrders = async (req, res) => {
   const userID = req.user._id;
 
   try {
-    // const ordersData = await Order.find({
-    //   user: userID,
-    // })
-    //   .populate("addressId", "name area city mobile addressType state pinCode")
-    //   .populate(
-    //     "orderItems.product",
-    //     "name img price discount categoryName rating brandName"
-    //   );
-
     const ordersData = await Order.find({
       user: userID,
     })
