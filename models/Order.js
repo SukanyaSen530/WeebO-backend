@@ -11,7 +11,7 @@ const OrderSchema = new Schema(
       required: [true, "User Id is required!"],
       ref: User,
     },
-    addressId: {
+    address: {
       type: mongoose.Schema.Types.ObjectId,
       required: [true, "Address Id is required!"],
       ref: Address,

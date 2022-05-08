@@ -69,7 +69,7 @@ export const checkoutComplete = async (req, res) => {
         try {
           const newOrder = new Order({
             user: userID,
-            addressId,
+            address: addressId,
             orderItems: [...order],
             totalPaid: parseInt(totalAmount / 100),
             couponDiscount: parseInt(couponDiscount / 100),

@@ -16,14 +16,15 @@ export const getOrders = async (req, res) => {
 
     const ordersData = await Order.find({
       user: userID,
-    }).populate([
-      { path: "addressId" },
-      {
-        path: "orderItems.product",
-        select: "name img price discount categoryName rating brandName",
-      },
-    ]);
-    // .sort({ createdAt: -1 });
+    })
+      .populate([
+        { path: "address" },
+        {
+          path: "orderItems.product",
+          select: "name img price discount categoryName rating brandName",
+        },
+      ])
+      .sort({ createdAt: -1 });
 
     return res.status(200).json({ orders: ordersData });
   } catch (e) {
