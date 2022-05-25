@@ -58,6 +58,12 @@ export const checkoutComplete = async (req, res) => {
     );
 
     if (checkout_session.payment_status === "paid") {
+      const orderExists = await Order.findOne({
+        stripeSessionId: checkout_session.id,
+      });
+
+      if (orderExists) return;
+
       const userID = data?.data?.object.client_reference_id;
       const addressId = data?.data?.object?.metadata?.addressId;
 
@@ -68,31 +74,31 @@ export const checkoutComplete = async (req, res) => {
 
       const address = await Address.findById(addressId);
 
+      console.log("session Id", checkout_session.id);
+
       if (order) {
         try {
           const newOrder = new Order({
+            stripeSessionId: checkout_session.id,
             user: userID,
-            address,
+            address: address,
             orderItems: [...order],
             totalPaid: totalAmount,
             couponDiscount: totalAmount - couponDiscount,
           });
-          await newOrder.save();
-        } catch (e) {
-          console.log("error saving order", e);
-        }
-      }
 
-      try {
-        await Cart.findOneAndUpdate(
-          { user: userID },
-          { $set: { cartItems: [] } },
-          {
-            new: true,
-          }
-        );
-      } catch (err) {
-        console.log("cart not cleared", err);
+          await newOrder.save();
+
+          await Cart.findOneAndUpdate(
+            { user: userID },
+            { $set: { cartItems: [] } },
+            {
+              new: true,
+            }
+          );
+        } catch (e) {
+          console.log("error saving order and clearing cart", e);
+        }
       }
     }
   }

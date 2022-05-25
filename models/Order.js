@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
 import User from "./User.js";
 import Product from "./Product.js";
-import Address from "./Address.js";
 const { Schema, model } = mongoose;
 
 const OrderSchema = new Schema(
   {
+    stripeSessionId: { type: "String", unique: true },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       required: [true, "User Id is required!"],
