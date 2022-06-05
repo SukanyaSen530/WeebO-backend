@@ -23,10 +23,9 @@ export const checkoutPayment = async (req, res) => {
       cancel_url: `${process.env.CLIENT_URL}/checkout`,
     });
 
-    res.status(200).json({ success: true, sessionId: stripeSession.id });
+    return res.status(200).json({ success: true, sessionId: stripeSession.id });
   } catch (e) {
-    console.log(e);
-    res.status(409).json({ success: false, message: e.message });
+    return res.status(409).json({ success: false, message: e.message });
   }
 };
 
@@ -73,8 +72,6 @@ export const checkoutComplete = async (req, res) => {
       const couponDiscount = parseInt(data?.data?.object?.amount_total / 100);
 
       const address = await Address.findById(addressId);
-
-      console.log("session Id", checkout_session.id);
 
       if (order) {
         try {

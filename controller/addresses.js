@@ -53,7 +53,6 @@ export const updateAddress = async (req, res) => {
 
     res.status(200).json({ success: true, address: newUpdatedAddress });
   } catch (e) {
-    console.log(e);
     res.status(409).json({ success: false, message: e.message });
   }
 };

@@ -203,6 +203,7 @@ export const incrementDecrementQuantity = async (req, res) => {
 
 export const removeFromCart = async (req, res) => {
   const { id: productID } = req.body;
+
   const userID = req.user._id;
 
   if (!mongoose.Types.ObjectId.isValid(productID)) {
