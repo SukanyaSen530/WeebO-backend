@@ -7,7 +7,7 @@ import Address from "../models/Address.js";
 export const checkoutPayment = async (req, res) => {
   const userID = req.user._id;
   const { order, userEmail } = req.body;
-  const stripe = new Stripe(process.env.STRIPE_KEY);
+  const stripe = new Stripe(`${process.env.STRIPE_KEY}`);
   const line_items = getLineItems(order.orderItems);
 
   try {
@@ -30,7 +30,7 @@ export const checkoutPayment = async (req, res) => {
 };
 
 export const checkoutComplete = async (req, res) => {
-  const stripe = new Stripe(process.env.STRIPE_KEY);
+  const stripe = new Stripe(`${process.env.STRIPE_KEY}`);
   const payload = req.rawBody;
 
   const sig = req.headers["stripe-signature"];
@@ -39,7 +39,7 @@ export const checkoutComplete = async (req, res) => {
     event = stripe.webhooks.constructEvent(
       payload,
       sig,
-      process.env.STRIPE_WEBHOOK_KEY
+      `${process.env.STRIPE_WEBHOOK_KEY}`
     );
   } catch (err) {
     return res.status(400).send(`Webhook Error: ${err.message}`);
