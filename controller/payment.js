@@ -68,8 +68,8 @@ export const checkoutComplete = async (req, res) => {
 
       const order = getOrderData(session.line_items.data);
 
-      const totalAmount = parseInt(data?.data?.object?.amount_subtotal / 100);
-      const couponDiscount = parseInt(data?.data?.object?.amount_total / 100);
+      const totalPaid = parseInt(data?.data?.object?.amount_subtotal / 100);
+      const totalAmount = parseInt(data?.data?.object?.amount_total / 100);
 
       const address = await Address.findById(addressId);
 
@@ -80,8 +80,9 @@ export const checkoutComplete = async (req, res) => {
             user: userID,
             address: address,
             orderItems: [...order],
-            totalPaid: totalAmount,
-            couponDiscount: totalAmount - couponDiscount,
+            totalAmount,
+            totalPaid,
+            couponDiscount: totalAmount - totalPaid,
           });
 
           await newOrder.save();

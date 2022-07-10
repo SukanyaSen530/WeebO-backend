@@ -25,6 +25,9 @@ const OrderSchema = new Schema(
         },
       },
     ],
+    totalAmount: {
+      type: Number,
+    },
     totalPaid: {
       type: Number,
     },
