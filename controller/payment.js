@@ -68,8 +68,8 @@ export const checkoutComplete = async (req, res) => {
 
       const order = getOrderData(session.line_items.data);
 
-      const totalPaid = parseInt(data?.data?.object?.amount_subtotal / 100);
-      const totalAmount = parseInt(data?.data?.object?.amount_total / 100);
+      const totalAmount = parseInt(data?.data?.object?.amount_subtotal / 100);
+      const totalPaid = parseInt(data?.data?.object?.amount_total / 100);
 
       const address = await Address.findById(addressId);
 
